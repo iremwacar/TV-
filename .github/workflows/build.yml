@@ -4,14 +4,14 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
       - run: npm install
-      - run: npx electron-packager . "TV+ Big Screen" --platform=darwin --arch=universal --icon=TV+icon.ico
+      - run: npx electron-packager . "TV-Plus-Big-Screen" --platform=darwin --arch=universal --icon=TV+icon.ico
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # İşte burayı v4 yaptık!
         with:
           name: TV-Plus-Mac-App
-          path: TV+ Big Screen-darwin-universal/
+          path: TV-Plus-Big-Screen-darwin-universal/
