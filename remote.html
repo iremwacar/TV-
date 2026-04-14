@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            margin: 0; background: #0b0b0b; color: #fff; font-family: 'Segoe UI', sans-serif; 
+            height: 100vh; display: flex; flex-direction: column; align-items: center; 
+            overflow: hidden; border-left: 1px solid #222;
+        }
+        .remote-body { width: 100%; padding: 15px 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        
+        button { background: #1a1a1a; border: 1px solid #333; color: #eee; cursor: pointer; outline: none; transition: border-color 0.1s; }
+        button:active { border-color: #ffcc00; color: #ffcc00; }
+
+        .power { width: 40px; height: 40px; border-radius: 50%; background: #900; color: #fff; border: none; }
+        .num-btn { width: 38px; height: 38px; border-radius: 50%; font-size: 14px; }
+        
+        .side-row { display: flex; justify-content: space-between; width: 145px; }
+        .control-unit { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .label { font-size: 9px; color: #666; font-weight: bold; }
+        
+        .oval-btn { width: 42px; height: 80px; background: #1a1a1a; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #333; overflow: hidden;}
+        .inner-btn { background: none; border: none; color: #fff; font-size: 18px; width: 100%; height: 35px; }
+
+        .nav-circle { position: relative; width: 130px; height: 130px; background: #1a1a1a; border-radius: 50%; border: 1px solid #333; }
+        .nav-dir { position: absolute; background: none; border: none; font-size: 18px; color: #888; }
+        .up { top: 5px; left: 50%; transform: translateX(-50%); }
+        .down { bottom: 5px; left: 50%; transform: translateX(-50%); }
+        .left { left: 5px; top: 50%; transform: translateY(-50%); }
+        .right { right: 5px; top: 50%; transform: translateY(-50%); }
+        .ok { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; border-radius: 50%; background: #222; border: 1px solid #444; color: #fff; font-weight: bold; }
+
+        .back-exit-row { display: flex; justify-content: space-between; width: 150px; }
+        .small-btn { width: 65px; height: 30px; border-radius: 15px; font-size: 10px; color: #bbb; background: #1a1a1a; }
+
+        .colors { display: flex; gap: 8px; }
+        .c-dot { width: 14px; height: 14px; border-radius: 50%; border: none; }
+    </style>
+</head>
+<body>
+    <div class="remote-body">
+        <button class="power" onclick="send(256)">⏻</button>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+            <button class="num-btn" onclick="send(49)">1</button>
+            <button class="num-btn" onclick="send(50)">2</button>
+            <button class="num-btn" onclick="send(51)">3</button>
+            <button class="num-btn" onclick="send(52)">4</button>
+            <button class="num-btn" onclick="send(53)">5</button>
+            <button class="num-btn" onclick="send(54)">6</button>
+            <button class="num-btn" onclick="send(55)">7</button>
+            <button class="num-btn" onclick="send(56)">8</button>
+            <button class="num-btn" onclick="send(57)">9</button>
+            <div></div><button class="num-btn" onclick="send(48)">0</button><div></div>
+        </div>
+
+        <div class="side-row">
+            <div class="control-unit">
+                <div class="oval-btn">
+                    <button class="inner-btn" onclick="send(259)">+</button>
+                    <button class="inner-btn" onclick="send(260)">-</button>
+                </div>
+                <div class="label">VOL</div>
+            </div>
+            <button class="num-btn" style="margin-top: 20px;" onclick="send(261)">🔇</button>
+            <div class="control-unit">
+                <div class="oval-btn">
+                    <button class="inner-btn" onclick="send(87)">+</button>
+                    <button class="inner-btn" onclick="send(81)">-</button>
+                </div>
+                <div class="label">CH</div>
+            </div>
+        </div>
+
+        <div class="nav-circle">
+            <button class="nav-dir up" onclick="send(38)">▲</button>
+            <button class="nav-dir left" onclick="send(37)">◀</button>
+            <button class="ok" onclick="send(13)">OK</button>
+            <button class="nav-dir right" onclick="send(39)">▶</button>
+            <button class="nav-dir down" onclick="send(40)">▼</button>
+        </div>
+
+        <div class="back-exit-row">
+            <button class="small-btn" onclick="send(8)">BACK</button>
+            <button class="small-btn" onclick="exitAndReset()">EXIT</button>
+        </div>
+
+        <div class="colors">
+            <button class="c-dot" style="background: #f00;" onclick="send(275)"></button>
+            <button class="c-dot" style="background: #0f0;" onclick="send(276)"></button>
+            <button class="c-dot" style="background: #ff0;" onclick="send(277)"></button>
+            <button class="c-dot" style="background: #00f;" onclick="send(278)"></button>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        function send(code) { 
+            ipcRenderer.send('remote-control', code); 
+        }
+
+        // EXIT FONKSİYONU: Lokali temizle ve sayfayı kök dizine yönlendir
+        function exitAndReset() {
+            const cleanScript = `
+                (function() {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = 'https://smartstg.tvplus.com.tr/release/';
+                })();
+            `;
+            ipcRenderer.send('execute-code', cleanScript);
+        }
+    </script>
+</body>
+</html>

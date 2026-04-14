@@ -1,0 +1,17 @@
+name: Build Mac App
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm install
+      - run: npx electron-packager . "TV+ Big Screen" --platform=darwin --arch=universal --icon=TV+icon.ico
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: TV-Plus-Mac-App
+          path: TV+ Big Screen-darwin-universal/
